@@ -1,18 +1,18 @@
 package com.rest.api.utils;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 
-import org.springframework.util.ResourceUtils;
+import org.springframework.core.io.ClassPathResource;
 
 public class Utils {
 
-    public static final String csvFilePath() throws FileNotFoundException {
-        File file = ResourceUtils.getFile("classpath:riddles.csv");
-        return file.getPath();
+    public static final ClassPathResource csvFileResource() throws FileNotFoundException {
+        ClassPathResource fileResource = new ClassPathResource("riddles.csv");
+        return fileResource;
     }
 
     /**
@@ -24,12 +24,15 @@ public class Utils {
      */
     public static final int totalRiddlesCount() throws IOException {
         int result = 0;
-        try (FileReader input = new FileReader(csvFilePath()); LineNumberReader count = new LineNumberReader(input);) {
+        InputStream is = csvFileResource().getInputStream();
+        try (InputStreamReader input = new InputStreamReader(is);
+                LineNumberReader count = new LineNumberReader(input);) {
             while (count.skip(Long.MAX_VALUE) > 0) {
             }
 
             result = count.getLineNumber() + 1;
         }
+        is.close();
         return result;
     }
 }

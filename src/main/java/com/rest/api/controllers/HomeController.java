@@ -1,7 +1,7 @@
 package com.rest.api.controllers;
 
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Random;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +23,7 @@ public class HomeController {
 	public ResponseEntity<ObjectNode> home() {
 		try {
 			// Read the CSV file.
-			CSVReader csvReader = new CSVReader(new FileReader(Utils.csvFilePath()));
+			CSVReader csvReader = new CSVReader(new InputStreamReader(Utils.csvFileResource().getInputStream()));
 
 			// Get the total lines count.
 			long totalLines = Utils.totalRiddlesCount();
@@ -37,6 +37,8 @@ public class HomeController {
 
 			// Get the riddle line.
 			String[] lines = csvReader.readNext();
+
+			csvReader.close();
 
 			// Get the question.
 			String question = lines[0];
